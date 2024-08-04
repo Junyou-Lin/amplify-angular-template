@@ -33,17 +33,50 @@ export class TodosComponent implements OnInit {
 
   createTodo() {
     try {
-      client.models.Todo.create({
-        content: window.prompt('Todo content'),
-      });
-      this.listTodos();
+      const content = window.prompt('Todo content');
+      if (content) {
+        client.models.Todo.create({
+          content: content,
+          isDone: false,
+        });
+        this.listTodos();
+      }
     } catch (error) {
-      console.error('error creating todos', error);
+      console.error('error creating todo', error);
     }
   }
 
+  toggleTodoDone(todo: any) {
+    try {
+      client.models.Todo.update({
+        id: todo.id,
+        isDone: !todo.isDone,
+      });
+      this.listTodos();
+    } catch (error) {
+      console.error('error updating todo', error);
+    }
+  }
 
   deleteTodo(id: string) {
-    client.models.Todo.delete({ id })
+    try {
+      client.models.Todo.delete({ id });
+      this.listTodos();
+    } catch (error) {
+      console.error('error deleting todo', error);
+    }
+  }
+
+  sayHello() {
+    try {
+      const name = window.prompt('Your name');
+      if (name) {
+        client.queries.sayHello({ name }).then((response) => {
+          alert(response.data);
+        });
+      }
+    } catch (error) {
+      console.error('error saying hello', error);
+    }
   }
 }
